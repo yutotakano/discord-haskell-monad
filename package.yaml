@@ -1,0 +1,32 @@
+name:                discord-haskell-monad
+version:             0.1.0.0
+github:              "yutotakano/discord-haskell-monad"
+license:             BSD3
+author:              "Yuto Takano"
+maintainer:          "moa17stock@gmail.com"
+copyright:           "2021 Yuto Takano"
+
+extra-source-files:
+- README.md
+
+# Metadata used when publishing your package
+synopsis:            Short description of your package
+category:            Web
+
+# To avoid duplicated efforts in documentation and dealing with the
+# complications of embedding Haddock markup inside cabal files, it is
+# common to point users to the README.md file.
+description:         Please see the README on GitHub at <https://github.com/yutotakano/discord-haskell-monad#readme>
+
+dependencies:
+- aeson
+- base >= 4.7 && < 5
+- bytestring
+- discord-haskell
+- mtl
+- req
+- safe-exceptions
+- text
+
+library:
+  source-dirs: src

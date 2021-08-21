@@ -1,0 +1,46 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.33.0.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: cfb9ae940ac8cef226fd4c7eb70e1f31748f5ea9b2fdab30bb0f2277d1f9b682
+
+name:           discord-haskell-monad
+version:        0.1.0.0
+synopsis:       Short description of your package
+description:    Please see the README on GitHub at <https://github.com/yutotakano/discord-haskell-monad#readme>
+category:       Web
+homepage:       https://github.com/yutotakano/discord-haskell-monad#readme
+bug-reports:    https://github.com/yutotakano/discord-haskell-monad/issues
+author:         Yuto Takano
+maintainer:     moa17stock@gmail.com
+copyright:      2021 Yuto Takano
+license:        BSD3
+license-file:   LICENSE
+build-type:     Simple
+extra-source-files:
+    README.md
+
+source-repository head
+  type: git
+  location: https://github.com/yutotakano/discord-haskell-monad
+
+library
+  exposed-modules:
+      Discord.Internal.Monad
+      Discord.Monad
+  other-modules:
+      Paths_discord_haskell_monad
+  hs-source-dirs:
+      src
+  build-depends:
+      aeson
+    , base >=4.7 && <5
+    , bytestring
+    , discord-haskell
+    , mtl
+    , req
+    , safe-exceptions
+    , text
+  default-language: Haskell2010
