@@ -9,8 +9,8 @@ copyright:          "2021 Yuto Takano"
 extra-source-files:
 - README.md
 
-synopsis:           Provides a MonadDiscord monad to encompass and abstract away
-                    discord-haskell's Either return types.
+synopsis:           A MonadDiscord monad to abstract away discord-haskell's
+                    Either return types.
 category:           Network
 
 description:        This library provides a Monad called MonadDiscord that
