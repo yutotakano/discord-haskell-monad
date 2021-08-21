@@ -1,22 +1,25 @@
-name:                discord-haskell-monad
-version:             0.1.0.0
-github:              "yutotakano/discord-haskell-monad"
-license:             BSD3
-author:              "Yuto Takano"
-maintainer:          "moa17stock@gmail.com"
-copyright:           "2021 Yuto Takano"
+name:               discord-haskell-monad
+version:            1.0.0
+github:             "yutotakano/discord-haskell-monad"
+license:            MIT
+author:             "Yuto Takano"
+maintainer:         "moa17stock@gmail.com"
+copyright:          "2021 Yuto Takano"
 
 extra-source-files:
 - README.md
 
-# Metadata used when publishing your package
-synopsis:            Short description of your package
-category:            Web
+synopsis:           Provides a MonadDiscord monad to encompass and abstract away
+                    discord-haskell's Either return types.
+category:           Network
 
-# To avoid duplicated efforts in documentation and dealing with the
-# complications of embedding Haddock markup inside cabal files, it is
-# common to point users to the README.md file.
-description:         Please see the README on GitHub at <https://github.com/yutotakano/discord-haskell-monad#readme>
+description:        This library provides a Monad called MonadDiscord that
+                    abstracts the error return types of discord-haskell using
+                    MonadThrow. It declares two instances of MonadDiscord,
+                    which are DiscordHandler and ReaderT Auth.
+
+                    Please see the README on GitHub at
+                    <https://github.com/yutotakano/discord-haskell-monad#readme>
 
 dependencies:
 - aeson
