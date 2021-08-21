@@ -14,7 +14,7 @@ as an instance of Exception, which can be thrown in MonadDiscord.
 module Discord.Internal.Monad (MonadDiscord(..)) where
 
 import Control.Concurrent (threadDelay)
-import Control.Exception.Safe (Exception, MonadThrow, MonadMask, SomeException, throwM)
+import Control.Exception.Safe (Exception, MonadMask, throwM, throwString)
 import Control.Monad.IO.Class (MonadIO, liftIO)
 import Control.Monad (void)
 import Control.Monad.Reader (ReaderT, ask)
@@ -36,10 +36,9 @@ import Discord
 instance Exception RestCallErrorCode
 
 -- | @MonadDiscord@ is a data class of Monads that can interact with Discord.
--- It requires MonadThrow to throw RestCallErrorCode, MonadMask as a helper for
--- common operations paired with errors (like `finally`), and MonadFail to allow
--- convenient pattern-matching in do-notation.
-class (Monad m, MonadThrow m, MonadMask m, MonadFail m) => MonadDiscord m where
+-- It requires MonadMask (which requires MonadThrow and MonadCatch) to get the
+-- nice exception things for RestCallErrorCode.
+class (Monad m, MonadMask m) => MonadDiscord m where
     -- Channels
     getChannel :: ChannelId -> m Channel
     modifyChannel :: ChannelId -> R.ModifyChannelOpts -> m Channel
@@ -176,7 +175,7 @@ instance MonadDiscord DiscordHandler where
     listGuildEmojis         = restCallAndHandle . R.ListGuildEmojis
     getGuildEmoji           = (restCallAndHandle .) . R.GetGuildEmoji
     createGuildEmoji g t b = case R.parseEmojiImage b of
-        Left  x -> fail $ T.unpack x
+        Left  x -> throwString $ T.unpack x
         Right x -> restCall (R.CreateGuildEmoji g t x) >>= handleDiscordResult
     modifyGuildEmoji            = ((restCallAndHandle .) .) . R.ModifyGuildEmoji
     deleteGuildEmoji            = (restCallAndHandle .) . R.DeleteGuildEmoji
@@ -269,7 +268,7 @@ handleDiscordResult result = case result of
 -- someFunc :: IO ()
 -- someFunc = runReaderT (void $ createMessage 1234 "text") (Auth "tokenhere")
 -- @
-instance MonadDiscord (ReaderT Auth IO) where
+instance (MonadIO m, MonadMask m) => MonadDiscord (ReaderT Auth m) where
     getChannel              = callRestIO . R.GetChannel
     modifyChannel           = (callRestIO .) . R.ModifyChannel
     deleteChannel           = callRestIO . R.DeleteChannel
@@ -302,7 +301,7 @@ instance MonadDiscord (ReaderT Auth IO) where
     listGuildEmojis         = callRestIO . R.ListGuildEmojis
     getGuildEmoji           = (callRestIO .) . R.GetGuildEmoji
     createGuildEmoji g t b = case R.parseEmojiImage b of
-        Left  x -> fail $ T.unpack x
+        Left  x -> throwString $ T.unpack x
         Right x -> callRestIO $ R.CreateGuildEmoji g t x
     modifyGuildEmoji            = ((callRestIO .) .) . R.ModifyGuildEmoji
     deleteGuildEmoji            = (callRestIO .) . R.DeleteGuildEmoji
@@ -380,7 +379,7 @@ instance MonadDiscord (ReaderT Auth IO) where
 -- whenever some error occurs. A simplified version of the logic within
 -- discord-haskell's Discord.Internal.Rest.HTTP module, as it doesn't need to
 -- store the error information, it can just throw it.
-callRestIO :: (Request (r a), FromJSON a) => r a -> ReaderT Auth IO a
+callRestIO :: (MonadIO m, MonadMask m, Request (r a), FromJSON a) => r a -> ReaderT Auth m a
 callRestIO req = do
     -- get the token
     auth <- ask
