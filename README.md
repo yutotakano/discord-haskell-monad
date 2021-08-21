@@ -1,6 +1,6 @@
 # discord-haskell-monad
 
-This is a small extraneous library around discord-haskell that provides an
+This is a small extra library around discord-haskell that provides an
 abstraction layer for the REST calls to Discord. It does this by defining a
 `MonadDiscord` monad, and making `DiscordHandler` an instance of this.
 
@@ -33,6 +33,7 @@ be handled differently at each stage.
 The example below shows what this library enables you to write.
 
 ```hs
+import Discord.Monad
 --- Send a message and react on it
 example :: DiscordHandler ()
 example = do
