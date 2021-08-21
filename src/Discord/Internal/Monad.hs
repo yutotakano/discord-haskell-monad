@@ -1,16 +1,21 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE FlexibleInstances #-} -- allow instance declaration of MonadDiscord
-{-
-Module      : Discord.Monad
-License     : BSD (see the LICENSE file)
+{-|
+Module      : Discord.Internal.Monad
 Description : The DiscordMonad class and its instances.
+Copyright   : (c) 2021 Yuto Takano
+Maintainer  : moa17stock@gmail.com
+License     : MIT (see the LICENSE file)
 
-This module contains the 'MonadDiscord' data class, which abstracts away all
+This module contains the @MonadDiscord@ data class, which abstracts away all
 the possible REST interactions with Discord. It also defines instances for
-'DiscordHandler' and 'ReaderT Auth IO'. Finally, it declares RestCallErrorCode
-as an instance of Exception, which can be thrown in MonadDiscord.
+@DiscordHandler@ and @ReaderT Auth IO@. Finally, it declares @RestCallErrorCode@
+as an instance of @Exception@, which can be thrown in @MonadDiscord@.
 
+Documentation of each of the functions can be found on the [Discord API Docs]
+(https://discord.com/developers/docs/), since the names are not so different.
 -}
+
 module Discord.Internal.Monad (MonadDiscord(..)) where
 
 import Control.Concurrent (threadDelay)
@@ -246,12 +251,12 @@ instance MonadDiscord DiscordHandler where
     respond m t = void $ createMessage (messageChannel m) t
 
 -- | @restCallAndHandle@ calls a request and returns it in the DiscordHandler
--- monad, throwing @DiscordError@ on errors.
+-- monad, throwing @RestCallErrorCode@ on errors.
 restCallAndHandle :: (Request (r a), FromJSON a) => r a -> DiscordHandler a
 restCallAndHandle req = restCall req >>= handleDiscordResult
 
 -- | Handles the response of discord-haskell's REST calls in DiscordHandler
--- and throws a 'DiscordError' if the call errored.
+-- and throws a 'RestCallErrorCode' if the call errored.
 handleDiscordResult :: Either RestCallErrorCode a -> DiscordHandler a
 handleDiscordResult result = case result of
     Left  e -> throwM e
@@ -261,7 +266,8 @@ handleDiscordResult result = case result of
 -- access to the Auth tokens, but that can't be put in the type signature.
 -- So instead, it is implicitly passed through a ReaderT.
 --
--- [Usage:]
+-- Usage:
+--
 -- @
 -- import Control.Monad.Reader (runReaderT)
 -- import Control.Monad (void)
