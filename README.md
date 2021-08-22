@@ -69,4 +69,4 @@ main = runReaderT (createMessage 123412341234 "Hello World!") (Auth "token here"
 Contributions are welcome. I've tried and failed halfway when considering how to
 make MonadDiscord fully mtl-style (also, I didn't need those instances).
 
-This library was developed while developing a [Discord for our university server](https://github.com/yellowtides/owenbot-hs).
+This library was developed while developing a [Discord bot for our university server](https://github.com/yellowtides/owenbot-hs).
