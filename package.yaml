@@ -1,10 +1,10 @@
 name:               discord-haskell-monad
-version:            1.0.0
+version:            1.1.0
 github:             "yutotakano/discord-haskell-monad"
 license:            MIT
 author:             "Yuto Takano"
 maintainer:         "moa17stock@gmail.com"
-copyright:          "2021 Yuto Takano"
+copyright:          "2022 Yuto Takano"
 
 extra-source-files:
 - README.md
@@ -25,7 +25,7 @@ dependencies:
 - aeson
 - base >= 4.7 && < 5
 - bytestring
-- discord-haskell
+- discord-haskell == 1.12.0
 - mtl
 - req
 - safe-exceptions
