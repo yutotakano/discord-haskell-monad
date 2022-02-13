@@ -2,7 +2,7 @@
 
 This is a small extra library around discord-haskell that provides an
 abstraction layer for the REST calls to Discord. It does this by defining a
-`MonadDiscord` monad, and making `DiscordHandler` an instance of this.
+`MonadDiscord` type-class, and making `DiscordHandler` an instance of this.
 
 This enables bot developers to write much simpler code with simpler type
 signatures.
@@ -27,8 +27,8 @@ example = do
         Right _ -> liftIO $ putStrLn "All good!"
 ```
 
-You could use the Either monad, but that becomes difficult if failures need to
-be handled differently at each stage.
+You could use the Either monad, but that's a little difficult to understand
+notationally.
 
 The example below shows what this library enables you to write.
 
