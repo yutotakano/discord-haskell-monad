@@ -3,8 +3,8 @@
 ## 1.2.0
 
 - Breaking: Remove all functions for Rest commands as part of re-assessing the raison d'être of the library. The minimal and only definition is `call`, replacing `processRequest`.
-- Throw `HttpException` properly on `HttpException`s (and not `RestErrorCallCode`).
-- Throw `ResponseParseError` on parse errors instead of `RestErrorCallCode`.
+- Throw `HttpException` properly on `HttpException`s (and not `RestCallErrorCode`).
+- Throw `ResponseParseError` on parse errors instead of `RestCallErrorCode`.
 - Relax constraints on the Reader instance, to `MonadIO m, MonadReader Auth m => MonadDiscord m`.
 
 ## 1.1.0
