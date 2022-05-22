@@ -89,7 +89,7 @@ class (Monad m, MonadMask m) => MonadDiscord m where
 --
 -- See the implementation of restCall here:
 -- https://github.com/aquarial/discord-haskell/blob/c009edc5a5cd4991f600315686d5a1c880ea683a/src/Discord.hs#L128
-instance MonadDiscord DiscordHandler where
+instance {-# OVERLAPPING #-} MonadDiscord DiscordHandler where
     call req = do
         h <- ask
         empty <- liftIO $ isEmptyMVar (discordHandleLibraryError h)
