@@ -4,7 +4,7 @@
 
 - Breaking: Remove all functions for Rest commands as part of re-assessing the raison d'être of the library. The minimal and only definition is `call`, replacing `processRequest`.
 - Throw `HttpException` properly on `HttpException`s (and not `RestCallErrorCode`).
-- Throw `ResponseParseError` on parse errors instead of `RestCallErrorCode`.
+- Throw `ResponseParseException` on parse errors instead of `RestCallErrorCode`.
 - Relax constraints on the Reader instance, to `MonadIO m, MonadReader Auth m => MonadDiscord m`.
 - Allow `discord-haskell` up to 1.13.0
 

@@ -26,9 +26,9 @@ parse errors as Exceptions in IO.
 example :: (MonadDiscord m) => m ()
 example = do
     m <- call (R.CreateMessage 123123123 "Hello World!")
--- `catches` [Handler (\ (ex :: RestCallErrorCode)  -> handleAPIError ex),
---            Handler (\ (ex :: HttpException)      -> handleHttpError ex),
---            Handler (\ (ex :: ResponseParseError) -> handleParseError ex )]
+-- `catches` [Handler (\ (ex :: RestCallErrorCode)      -> handleAPIError ex),
+--            Handler (\ (ex :: ResponseParseException) -> handleParseError ex),
+--            Handler (\ (ex :: HttpException)          -> handleHttpError ex)]
     print $ messageId m
 ```
 
@@ -77,7 +77,7 @@ This means that you can use `handle`, `catch`, `finally`, etc (from the
 `safe-exceptions` package) wherever.
 
 In addition, the code may now explicitly throw a @HttpException@ or a
-@ResponseParseError@, which were previously consumed after logging. Note that,
+@ResponseParseException@, which were previously consumed after logging. Note that,
 due to this separation of errors and explicit exception throws, the functionality
 you get from `try . call $ ... :: Either RestCallErrorCode a` is different to
 the original `restCall`. Specifically, all parse errors which would have
