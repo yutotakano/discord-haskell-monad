@@ -4,13 +4,14 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 677885c11305fdca42a4090fef16e3de8242a0d88a9134cddae3b1d5ec5f88cb
+-- hash: 6f8253d4c66952e9f98aa8efc6dcb026d689c0e2042207b5ad7ee4bbdace5717
 
 name:           discord-haskell-monad
-version:        1.1.0
-synopsis:       A MonadDiscord monad to abstract away discord-haskell's Either return types.
-description:    This library provides a Monad called MonadDiscord that abstracts the error return types of discord-haskell using MonadThrow. It declares two instances of MonadDiscord, which are DiscordHandler and ReaderT Auth.
-                Please see the README on GitHub at <https://github.com/yutotakano/discord-haskell-monad#readme>
+version:        1.2.0
+synopsis:       A complementary library to discord-haskell, introducing the MonadDiscord monad.
+description:    This library introduces the MonadDiscord monad, for which DiscordHandler has an instance for, to make use of the ReaderT IO design pattern, throwing exceptions instead of attempting to reason about IO code with Eithers.
+                The monad also allows us to write polymorphic Discord-related functions that can be called both from DiscordHandler as usual, and from pure IO using an Auth token.
+                Please see the README either below if you are currently on Hackage, or alternatively on GitHub at <https://github.com/yutotakano/discord-haskell-monad#readme>
 category:       Network
 homepage:       https://github.com/yutotakano/discord-haskell-monad#readme
 bug-reports:    https://github.com/yutotakano/discord-haskell-monad/issues
