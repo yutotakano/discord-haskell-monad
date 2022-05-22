@@ -9,8 +9,8 @@ copyright:          "2022 Yuto Takano"
 extra-source-files:
 - README.md
 
-synopsis:           A complementary library to discord-haskell, introducing the
-                    MonadDiscord monad.
+synopsis:           Exception-based thin layer above discord-haskell.
+                    MonadDiscord type-class too.
 category:           Network
 
 description:        This library introduces the MonadDiscord monad, for which
