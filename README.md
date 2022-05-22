@@ -1,17 +1,46 @@
 # discord-haskell-monad
 
-This is a small extra library around discord-haskell that provides an
-abstraction layer for the REST calls to Discord. It does this by defining a
-`MonadDiscord` type-class, and making `DiscordHandler` an instance of this.
+This is a supplementary library to `discord-haskell` that provides an
+exception-oriented abstraction layer for Discord API REST calls. It bases its
+existence on the idea that Either should be reserved for pure code, while
+Exceptions should be used for IO due to its complex unpredictability. This idea,
+which I fully agree with, comes from the
+[Learn Haskell by Building a Blog Generator](https://lhbg-book.link/06-errors_and_files/05-summary.html)
+book.
 
-This enables bot developers to write much simpler code with simpler type
-signatures.
+Reasoning about errors in IO with Either, as `discord-haskell` currently does
+with `RestCallErrorCode`, is unreliable and leads to unnecessarily messy user
+code. The line grows blurry between what is handled by the Either and what is not.
+For instance, while e.g. HTTP 400 errors are returned by `restCall` through
+`Left RestCallErrorCode`, connection timeout exceptions, or response parse errors,
+are not. Many are logged to `discord-haskell`'s internal log. This raises the
+question on whether those HTTP 400 errors truly need to be handled with Either
+anyway.
+
+The library, attempting to be an answer to that question, introduces a
+`MonadDiscord` type-class. It has a single method: `call`. This is a sort-of
+replacement of `restCall`, but throws HTTP error codes, network errors, and
+parse errors as Exceptions in IO.
+
+```hs
+example :: (MonadDiscord m) => m ()
+example = do
+    m <- call (R.CreateMessage 123123123 "Hello World!")
+-- `catches` [Handler (\ (ex :: RestCallErrorCode)  -> handleAPIError ex),
+--            Handler (\ (ex :: HttpException)      -> handleHttpError ex),
+--            Handler (\ (ex :: ResponseParseError) -> handleParseError ex )]
+    print $ messageId m
+```
+
+The library also has two instances of this monad defined, one for
+`DiscordHandler` and one for IO environments with access an auth token.
 
 ## The DiscordHandler instance
 
-With the `Either RestCallErrorCode a` type that `discord-haskell` uses for its
-return values of REST calls, handling errors with case statements like below can
-get very cumbersome and indent-prone.
+The DiscordHandler instance of `DiscordMonad` solves the indentation problem
+that is present with the `Either RestCallErrorCode a` type that `discord-haskell`
+uses for its calls. For example, the following is what you might typically write
+with `discord-haskell`.
 
 ```hs
 -- Send a message and react on it
@@ -19,54 +48,56 @@ example :: DiscordHandler ()
 example = do
   eMsg <- restCall $ R.CreateMessage 123412341234 "Hello World!"
   case eMsg of
-    Left e -> pure ()
+    Left e -> liftIO (print "first msg failed") >> pure ()
     Right msg -> do
       result <- restCall $ R.CreateReaction (messageChannel msg, messageId msg) "eyes"
       case result of
-        Left e -> pure ()
+        Left e -> liftIO (print "reaction failed") >> pure ()
         Right _ -> liftIO $ putStrLn "All good!"
 ```
 
-You could use the Either monad, but that's a little difficult to understand
-notationally.
+You could use the EitherT transformer, but if rollback is required for certain
+actions it is difficult. The code is also more difficult to understand since you
+have to sprinkle `lift`s throughout.
 
-The example below shows what this library enables you to write.
+The following is what you would replace the above by, using this library.
 
 ```hs
 import Discord.Monad
 --- Send a message and react on it
 example :: DiscordHandler ()
 example = do
-  msg <- createMessage 123412341234 "Hello World!"
-  createReaction (messageChannel msg, messageId msg) "eyes"
+  msg <- call $ R.CreateMessage 123412341234 "Hello World!"
+  call $ R.CreateReaction (messageChannel msg, messageId msg) "eyes"
   liftIO $ putStrLn "All good!"
 ```
 
-The `RestCallErrorCode` that was previously in `Left` (from `Either`) is now
-encompassed as an Exception that can be thrown and caught safely. This means
-that you can use `handle`, `catch`, `finally`, etc wherever in the code to
-appropriately catch the error. One interesting example is `try`, which when used,
-will make each function's types `Either RestCallErrorCode a` -- this is exactly
-what the default discord-haskell library provides!
+The `RestCallErrorCode` that was previously in `Left` is now an Exception.
+This means that you can use `handle`, `catch`, `finally`, etc (from the
+`safe-exceptions` package) wherever.
 
-## The ReaderT Auth instance
+In addition, the code may now explicitly throw a @HttpException@ or a
+@ResponseParseError@, which were previously consumed after logging. Note that,
+due to this separation of errors and explicit exception throws, the functionality
+you get from `try . call $ ... :: Either RestCallErrorCode a` is different to
+the original `restCall`. Specifically, all parse errors which would have
+originally been returned as ErrorCode 400 will not be caught by that `try`, nor
+will HttpExceptions, which would originally have caused an automatic retry of
+the request.
 
-In addition to the above convenient instance for `DiscordHandler`, this library
-provides an instance of `MonadDiscord` for `ReaderT Auth m` where m has the
-capabilities of `(MonadIO m, MonadMask m)`.
+## The MonadReader Auth instance
 
-This has various thankful consequences. The most important and biggest impact is
-that calls to the Discord REST API is as intuitive as it can get, even without
-running a bot at all. Here is a snippet of its potential use.
+This library also provides an instance of `MonadDiscord` for all Monads `m` that
+satisfy the constraint `(MonadIO m, MonadReader Auth m, MonadMask m)`.
+
+In plain English, this means any IO monad with access to the Auth can send
+Discord requests (complete with rate-limiting). This does not require running
+the Bot's Rest and Event loop, reducing the resources needed to send a simple
+API request.
 
 ```hs
 main :: IO Message
-main = runReaderT (createMessage 123412341234 "Hello World!") (Auth "token here")
+main = runReaderT (call $ R.CreateMessage 123412341234 "Hello World!") (Auth "token here")
 ```
-
-## Contribution
-
-Contributions are welcome. I've tried and failed halfway when considering how to
-make MonadDiscord fully mtl-style (also, I didn't need those instances).
 
 This library was developed while developing a [Discord bot for our university server](https://github.com/yellowtides/owenbot-hs).
