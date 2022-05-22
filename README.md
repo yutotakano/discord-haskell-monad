@@ -76,8 +76,8 @@ The `RestCallErrorCode` that was previously in `Left` is now an Exception.
 This means that you can use `handle`, `catch`, `finally`, etc (from the
 `safe-exceptions` package) wherever.
 
-In addition, the code may now explicitly throw a @HttpException@ or a
-@ResponseParseException@, which were previously consumed after logging. Note that,
+In addition, the code may now explicitly throw a `HttpException` or a
+`ResponseParseException`, which were previously consumed after logging. Note that,
 due to this separation of errors and explicit exception throws, the functionality
 you get from `try . call $ ... :: Either RestCallErrorCode a` is different to
 the original `restCall`. Specifically, all parse errors which would have
