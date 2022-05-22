@@ -100,4 +100,8 @@ main :: IO Message
 main = runReaderT (call $ R.CreateMessage 123412341234 "Hello World!") (Auth "token here")
 ```
 
+## Concluding Notes
+
+Please feel free to contribute through issues or pull requests if you want to add anything!
+
 This library was developed while developing a [Discord bot for our university server](https://github.com/yellowtides/owenbot-hs).
