@@ -70,7 +70,7 @@ instance Exception ResponseParseException
 
 -- | @MonadDiscord@ is a class of Monads that can invoke a Discord
 -- 'Discord.Internal.Rest.Prelude.Request'.
-class (Monad m) => MonadDiscord m where
+class (Monad m, MonadMask m) => MonadDiscord m where
     {-# MINIMAL call #-}
     -- | Calls the Discord API with the specific Request.
     -- This may throw the following:
