@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 6f8253d4c66952e9f98aa8efc6dcb026d689c0e2042207b5ad7ee4bbdace5717
+-- hash: 8baa4c78e98437a83a50f766599da888f6816d9f443905b1ff7de3b00955c9f4
 
 name:           discord-haskell-monad
 version:        1.2.0
@@ -37,12 +37,12 @@ library
   hs-source-dirs:
       src
   build-depends:
-      aeson
+      aeson ==1.5.6.0
     , base >=4.7 && <5
-    , bytestring
-    , discord-haskell ==1.12.0
-    , mtl
-    , req
-    , safe-exceptions
+    , bytestring >=0.10.12.0 && <0.11
+    , discord-haskell >=1.12.0 && <=1.12.5
+    , mtl ==2.2.2
+    , req >=3.9.0 && <3.10
+    , safe-exceptions >=0.1.7.2 && <=0.1.8
     , text
   default-language: Haskell2010
