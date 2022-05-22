@@ -14,7 +14,9 @@ This module contains the @MonadDiscord@ type class to call Discord Requests.
 An instance for @DiscordHandler@ and all monads that satisfy @MonadReader Auth@
 are provided.
 
-Based on the ReaderT IO design pattern, all types of errors are thrown as
+Based on the idea that Either should be used only for pure code and that
+Exceptions should be used for unpredictable IO code, this library puts a thin
+layer on top of `discord-haskell` so that all types of errors are thrown as
 exceptions. This includes: @RestCallErrorCode@, @HttpException@, and
 @ResponseParseException@.
 -}
@@ -52,8 +54,7 @@ data ResponseParseException = ResponseParseException String BL.ByteString
 instance Exception ResponseParseException
 
 -- | @MonadDiscord@ is a class of Monads that can invoke a Discord
--- @Discord.Internal.Rest.Prelude.Request@. Based on the ReaderT IO design
--- pattern, this library opts to throws all types of errors as exceptions.
+-- @Discord.Internal.Rest.Prelude.Request@.
 class (Monad m) => MonadDiscord m where
     {-# MINIMAL call #-}
     -- | Calls the Discord API with the specific Request.
