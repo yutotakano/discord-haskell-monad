@@ -6,6 +6,7 @@
 - Throw `HttpException` properly on `HttpException`s (and not `RestCallErrorCode`).
 - Throw `ResponseParseError` on parse errors instead of `RestCallErrorCode`.
 - Relax constraints on the Reader instance, to `MonadIO m, MonadReader Auth m => MonadDiscord m`.
+- Allow `discord-haskell` up to 1.13.0
 
 ## 1.1.0
 
