@@ -15,8 +15,9 @@ category:           Network
 
 description:        This library introduces the MonadDiscord monad, for which
                     DiscordHandler has an instance for, to make use of the
-                    ReaderT IO design pattern, throwing exceptions instead of
-                    attempting to reason about IO code with Eithers.
+                    Exception-with-IO pattern, opting to throw exceptions
+                    instead of attempting to reason about IO network errors
+                    using Eithers.
 
                     The monad also allows us to write polymorphic Discord-related
                     functions that can be called both from DiscordHandler as
