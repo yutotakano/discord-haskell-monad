@@ -3,19 +3,20 @@
 This is a supplementary library to `discord-haskell` that provides an
 exception-oriented abstraction layer for Discord API REST calls. It bases its
 existence on the idea that Either should be reserved for pure code, while
-Exceptions should be used for IO due to its complex unpredictability. This idea,
-which I fully agree with, comes from the
+Exceptions should be used for IO due to its complex unpredictability. This idea
+comes from various sources including the
+[Exceptions Best Practices](https://www.fpcomplete.com/blog/2016/11/exceptions-best-practices-haskell/)
+post by Michael Snoyman and the
 [Learn Haskell by Building a Blog Generator](https://lhbg-book.link/06-errors_and_files/05-summary.html)
-book.
+book by Gil Mizrahi.
 
 Reasoning about errors in IO with Either, as `discord-haskell` currently does
 with `RestCallErrorCode`, is unreliable and leads to unnecessarily messy user
 code. The line grows blurry between what is handled by the Either and what is not.
 For instance, while e.g. HTTP 400 errors are returned by `restCall` through
-`Left RestCallErrorCode`, connection timeout exceptions, or response parse errors,
-are not. Many are logged to `discord-haskell`'s internal log. This raises the
-question on whether those HTTP 400 errors truly need to be handled with Either
-anyway.
+`Left RestCallErrorCode`, connection timeout exceptions are not. Many are logged
+to `discord-haskell`'s internal log. I wondered whether those HTTP 400 errors
+truly needed to be handled with Either anyway.
 
 The library, attempting to be an answer to that question, introduces a
 `MonadDiscord` type-class. It has a single method: `call`. This is a sort-of
