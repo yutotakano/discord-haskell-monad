@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.1
+
+- Allow `discord-haskell` up to 1.14.0 using CPP conditionals
+
 ## 1.2.0
 
 - Breaking: Remove all functions for Rest commands as part of re-assessing the raison d'être of the library. The minimal and only definition is `call`, replacing `processRequest`.

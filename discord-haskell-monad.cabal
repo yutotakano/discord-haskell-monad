@@ -3,11 +3,9 @@ cabal-version: 1.12
 -- This file has been generated from package.yaml by hpack version 0.34.4.
 --
 -- see: https://github.com/sol/hpack
---
--- hash: 86b71c28a07058f711981fb36b2e5394c5200c4cc4bce33151409b9138f44fd4
 
 name:           discord-haskell-monad
-version:        1.2.0
+version:        1.2.1
 synopsis:       Exception-based thin layer above discord-haskell. MonadDiscord type-class too.
 description:    This library introduces the MonadDiscord monad, for which DiscordHandler has an instance for, to make use of the Exception-with-IO pattern, opting to throw exceptions instead of attempting to reason about IO network errors using Eithers.
                 The monad also allows us to write polymorphic Discord-related functions that can be called both from DiscordHandler as usual, and from pure IO using an Auth token.
