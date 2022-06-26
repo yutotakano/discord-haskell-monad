@@ -3,6 +3,7 @@
 {-# LANGUAGE FlexibleContexts #-} -- allow instance declaration for MonadReader Auth
 {-# LANGUAGE UndecidableInstances #-} -- necessary for MonadIO constraint on MonadDiscord
 {-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE CPP #-}
 {-|
 Module      : Discord.Internal.Monad
 Description : The DiscordMonad class and its instances.
@@ -57,9 +58,12 @@ import Discord.Handle (DiscordHandle(..))
 import Discord.Types
 import Discord
 
+#if MIN_VERSION_discord_haskell(0,14,0)
+#else
 -- | We redefine the 'RestCallErrorCode' as an IO Exception that is thrown when
 -- the Discord API returns an unexpected response code.
 instance Exception RestCallErrorCode
+#endif
 
 -- | We introduce a new datatype for parse errors. This replaces discord-haskell's
 -- default behaviour which is to print the error to the log and return a 400
@@ -101,8 +105,8 @@ instance {-# OVERLAPPING #-} MonadDiscord DiscordHandler where
             resp <- liftIO $ writeRestCall (discordHandleRestChan h) req
             case resp of
                 Right x -> pure x
-                Left (RestCallInternalErrorCode c e1 e2) ->
-                    throwIO $ RestCallErrorCode c (TE.decodeUtf8 e1) (TE.decodeUtf8 e2)
+                Left (RestCallInternalErrorCode c status body) ->
+                    throwIO $ RestCallErrorCode c (TE.decodeUtf8 status) (TE.decodeUtf8 body)
                 Left (RestCallInternalHttpException e1) ->
                     -- in discord-haskell's restCall, the request is retried here
                     -- automatically after a delay. We choose not to do that and
